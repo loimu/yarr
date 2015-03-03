@@ -51,7 +51,7 @@ private slots:
     void startGame();
     void resign();
     // menu Preferences
-    //void settings();
+    void settings();
     // menu Help
     void rules();
     void about();

@@ -20,6 +20,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     QTest::qExec(&t1);
     ui->setupUi(this);
     ui->mainToolBar->hide();
+    ui->tableView->verticalHeader()->hide();
+    ui->tableView->horizontalHeader()->hide();
     // menu actions
     connect(ui->actionNew_Game, SIGNAL(triggered()), SLOT(startGame()));
     connect(ui->actionRules, SIGNAL(triggered()), SLOT(rules()));
@@ -81,7 +83,7 @@ void MainWindow::initStateMachine() {
 void MainWindow::cellClicked(QModelIndex indexClicked) {
     if(this->property("isWaitingForHumanMove").toBool()) {
         if(model->makeMove(indexClicked, property("currentPlayerId").toInt()))
-            playerMadeMove();
+            emit playerMadeMove();
     }
 }
 
@@ -95,18 +97,18 @@ void MainWindow::afterMove() {
             checkGame();
             return;
         }
-        nextMove();
+        emit nextMove();
     }
-    nextMove();
+    emit nextMove();
 }
 
 void MainWindow::beforeMove() {
     QString count;
     count.append(tr("White:"));
-    count.append((QString)model->playerBidsCount(player->getPlayerId()));
-    count.append("/");
+    //count.append((QString)model->playerBidsCount(player->getPlayerId()));
+    count.append(" | ");
     count.append("Black:");
-    count.append((QString)model->playerBidsCount(computerPlayer->getPlayerId()));
+    //count.append((QString)model->playerBidsCount(computerPlayer->getPlayerId()));
     ui->statusBar->showMessage(count);
 }
 
@@ -114,11 +116,12 @@ void MainWindow::startGame() {
     this->statusBar()->showMessage(tr("New game is started"), 2000);
     model->init();
     setPlayers();
-    gameStarted();
+    emit gameStarted();
 }
 
 void MainWindow::resign() {
-    gameFinished();
+    emit gameFinished();
+    model->clear();
 }
 
 void MainWindow::checkGame() {
@@ -136,22 +139,21 @@ void MainWindow::checkGame() {
         message = tr("Not bad!");
     }
     QMessageBox::information(this, title, message);
-    gameFinished();
+    emit gameFinished();
 }
 
 void MainWindow::setPlayers() {
-    player->setPlayerId(Board::White);
-    computerPlayer->setPlayerId(Board::Black);
-    inGameState->setInitialState(playerSecondMoveState);
+    player->setPlayerId(Board::Black);
+    computerPlayer->setPlayerId(Board::White);
+    inGameState->setInitialState(playerFirstMoveState);
     playerFirstMoveState->assignProperty(this, "isWaitingForHumanMove", true);
     playerFirstMoveState->assignProperty(this, "currentPlayerId", player->getPlayerId());
     playerSecondMoveState->assignProperty(this, "isWaitingForHumanMove", false);
     playerSecondMoveState->assignProperty(this, "currentPlayerId", computerPlayer->getPlayerId());
 }
 
-void MainWindow::about() {
-    AboutDialog *dialog = new AboutDialog();
-    dialog->show();
+void MainWindow::settings() {
+
 }
 
 void MainWindow::rules() {
@@ -173,4 +175,9 @@ void MainWindow::rules() {
     textEdit->setGeometry(5,5, 490,565);
     textEdit->show();
     gameRules->show();
+}
+
+void MainWindow::about() {
+    AboutDialog *dialog = new AboutDialog();
+    dialog->show();
 }

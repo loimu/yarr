@@ -6,43 +6,39 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>369</width>
-    <height>419</height>
+    <width>349</width>
+    <height>379</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>YARR</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QTableView" name="tableView">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>20</y>
-      <width>256</width>
-      <height>192</height>
-     </rect>
-    </property>
-    <property name="verticalScrollBarPolicy">
-     <enum>Qt::ScrollBarAlwaysOff</enum>
-    </property>
-    <property name="horizontalScrollBarPolicy">
-     <enum>Qt::ScrollBarAlwaysOff</enum>
-    </property>
-    <attribute name="horizontalHeaderDefaultSectionSize">
-     <number>39</number>
-    </attribute>
-    <attribute name="verticalHeaderDefaultSectionSize">
-     <number>39</number>
-    </attribute>
-   </widget>
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QTableView" name="tableView">
+      <property name="verticalScrollBarPolicy">
+       <enum>Qt::ScrollBarAlwaysOff</enum>
+      </property>
+      <property name="horizontalScrollBarPolicy">
+       <enum>Qt::ScrollBarAlwaysOff</enum>
+      </property>
+      <attribute name="horizontalHeaderDefaultSectionSize">
+       <number>39</number>
+      </attribute>
+      <attribute name="verticalHeaderDefaultSectionSize">
+       <number>39</number>
+      </attribute>
+     </widget>
+    </item>
+   </layout>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>369</width>
+     <width>349</width>
      <height>27</height>
     </rect>
    </property>
@@ -51,7 +47,10 @@
      <string>&amp;Game</string>
     </property>
     <addaction name="actionNew_Game"/>
+    <addaction name="actionSave_Game"/>
+    <addaction name="actionLoad_Game"/>
     <addaction name="actionResign"/>
+    <addaction name="actionNetwork_Game"/>
     <addaction name="separator"/>
     <addaction name="actionQuit"/>
    </widget>
@@ -130,10 +129,40 @@
     <bool>false</bool>
    </property>
    <property name="text">
-    <string>Resign</string>
+    <string>Re&amp;sign</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+R</string>
+   </property>
+  </action>
+  <action name="actionSave_Game">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Save Game</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="actionLoad_Game">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Load Game</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+L</string>
+   </property>
+  </action>
+  <action name="actionNetwork_Game">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Network Game</string>
    </property>
   </action>
  </widget>

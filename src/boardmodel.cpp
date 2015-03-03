@@ -19,7 +19,6 @@ void BoardModel::init() {
     refreshPossibleMoves();
     beginResetModel();
     endResetModel();
-    //reset();
 }
 
 void BoardModel::clear() {
@@ -30,7 +29,6 @@ void BoardModel::clear() {
     lastMove = QModelIndex();
     beginResetModel();
     endResetModel();
-    //reset();
 }
 
 int BoardModel::rowCount(const QModelIndex&) const {
@@ -47,11 +45,14 @@ QVariant BoardModel::data(const QModelIndex& index, int role) const {
     }
     if(role == Qt::BackgroundColorRole) {
         if (possibleMoves[currentPlayerId].contains(index)) {
+            // green color
             return "#37a42c";
         }
         if(index == lastMove) {
+            // dark green color
             return "#75511a";
         }
+        // brown color
         return "#006e29";
     }
     return QVariant();
