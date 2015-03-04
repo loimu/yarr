@@ -3,12 +3,14 @@
 #include <QPropertyAnimation>
 #include <QSignalTransition>
 #include <QTextCodec>
+#include <QSettings>
 
 #include "tests.h"
 #include "boardmodel.h"
 #include "painter.h"
 #include "player.h"
 #include "solver.h"
+#include "settings.h"
 #include "aboutdialog.h"
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -26,6 +28,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     connect(ui->actionNew_Game, SIGNAL(triggered()), SLOT(startGame()));
     connect(ui->actionRules, SIGNAL(triggered()), SLOT(rules()));
     connect(ui->actionResign, SIGNAL(triggered()), SLOT(resign()));
+    connect(ui->actionSettings, SIGNAL(triggered()), SLOT(settings()));
     connect(ui->actionAbout_YARR, SIGNAL(triggered()), SLOT(about()));
 
     model = new BoardModel(this);
@@ -42,14 +45,14 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     playerFirstMoveState = new QState(inGameState);
     playerSecondMoveState = new QState(inGameState);
     checkBoardState = new QState(inGameState);
-    player = new Player(this);
-    player->setModel(model);
-    player->setPlayerId(Board::Black);
-    connect(player, SIGNAL(moveMade()), SIGNAL(playerMadeMove()));
-    computerPlayer = new Solver(this);
-    computerPlayer->setModel(model);
-    computerPlayer->setPlayerId(Board::White);
-    connect(computerPlayer, SIGNAL(moveMade()), SIGNAL(playerMadeMove()));
+    firstPlayer = new Player(this);
+    firstPlayer->setModel(model);
+    firstPlayer->setPlayerId(Board::Black);
+    connect(firstPlayer, SIGNAL(moveMade()), SIGNAL(playerMadeMove()));
+    secondPlayer = new Solver(this);
+    secondPlayer->setModel(model);
+    secondPlayer->setPlayerId(Board::White);
+    connect(secondPlayer, SIGNAL(moveMade()), SIGNAL(playerMadeMove()));
     connect(ui->tableView, SIGNAL(clicked(QModelIndex)),
             SLOT(cellClicked(QModelIndex)));
     initStateMachine();
@@ -69,8 +72,8 @@ void MainWindow::initStateMachine() {
     playerFirstMoveState->addTransition(this, SIGNAL(nextMove()), playerSecondMoveState)->addAnimation(animation);
     playerSecondMoveState->addTransition(this, SIGNAL(nextMove()), playerFirstMoveState)->addAnimation(animation);
     connect(outOfGameState, SIGNAL(propertiesAssigned()), SLOT(outOfGame()));
-    connect(playerFirstMoveState, SIGNAL(propertiesAssigned()), player, SLOT(takeTurn()));
-    connect(playerSecondMoveState, SIGNAL(propertiesAssigned()), computerPlayer, SLOT(takeTurn()));
+    connect(playerFirstMoveState, SIGNAL(propertiesAssigned()), firstPlayer, SLOT(takeTurn()));
+    connect(playerSecondMoveState, SIGNAL(propertiesAssigned()), secondPlayer, SLOT(takeTurn()));
     connect(playerFirstMoveState, SIGNAL(propertiesAssigned()), SLOT(beforeMove()));
     connect(playerSecondMoveState, SIGNAL(propertiesAssigned()), SLOT(beforeMove()));
     connect(this, SIGNAL(playerMadeMove()), SLOT(afterMove()));
@@ -104,11 +107,11 @@ void MainWindow::afterMove() {
 
 void MainWindow::beforeMove() {
     QString count;
-    count.append(tr("White:"));
-    //count.append((QString)model->playerBidsCount(player->getPlayerId()));
+    count.append(firstPlayer->getPlayerColor() + ":");
+    count.append(QString::number(model->playerBidsCount(firstPlayer->getPlayerId())));
     count.append(" | ");
-    count.append("Black:");
-    //count.append((QString)model->playerBidsCount(computerPlayer->getPlayerId()));
+    count.append(secondPlayer->getPlayerColor() + ":");
+    count.append(QString::number(model->playerBidsCount(secondPlayer->getPlayerId())));
     ui->statusBar->showMessage(count);
 }
 
@@ -125,8 +128,8 @@ void MainWindow::resign() {
 }
 
 void MainWindow::checkGame() {
-    int humanPlayerBidsCount = model->playerBidsCount(player->getPlayerId());
-    int computerPlayerBidsCount = model->playerBidsCount(computerPlayer->getPlayerId());
+    int humanPlayerBidsCount = model->playerBidsCount(firstPlayer->getPlayerId());
+    int computerPlayerBidsCount = model->playerBidsCount(secondPlayer->getPlayerId());
     QString title, message;
     if(humanPlayerBidsCount > computerPlayerBidsCount) {
         title = tr("You won");
@@ -143,17 +146,25 @@ void MainWindow::checkGame() {
 }
 
 void MainWindow::setPlayers() {
-    player->setPlayerId(Board::Black);
-    computerPlayer->setPlayerId(Board::White);
-    inGameState->setInitialState(playerFirstMoveState);
+    QSettings settings("yarr", "YARR");
+    if(settings.value("main/whiteEnabled").toBool()) {
+        firstPlayer->setPlayerId(Board::White);
+        secondPlayer->setPlayerId(Board::Black);
+        inGameState->setInitialState(playerSecondMoveState);
+    } else {
+        firstPlayer->setPlayerId(Board::Black);
+        secondPlayer->setPlayerId(Board::White);
+        inGameState->setInitialState(playerFirstMoveState);
+    }
     playerFirstMoveState->assignProperty(this, "isWaitingForHumanMove", true);
-    playerFirstMoveState->assignProperty(this, "currentPlayerId", player->getPlayerId());
+    playerFirstMoveState->assignProperty(this, "currentPlayerId", firstPlayer->getPlayerId());
     playerSecondMoveState->assignProperty(this, "isWaitingForHumanMove", false);
-    playerSecondMoveState->assignProperty(this, "currentPlayerId", computerPlayer->getPlayerId());
+    playerSecondMoveState->assignProperty(this, "currentPlayerId", secondPlayer->getPlayerId());
 }
 
 void MainWindow::settings() {
-
+    Settings *dialog = new Settings(this);
+    dialog->show();
 }
 
 void MainWindow::rules() {
@@ -166,7 +177,7 @@ void MainWindow::rules() {
     closeButton->setGeometry(435,570,60,25);
     closeButton->show();
     connect(closeButton, SIGNAL(clicked()), gameRules, SLOT(close()));
-    QTextEdit * textEdit = new QTextEdit(gameRules);
+    QTextEdit *textEdit = new QTextEdit(gameRules);
     QFile rulesFile(":/rules.txt");
     rulesFile.open(QFile::ReadOnly | QFile::Text);
     QTextStream ReadFile(&rulesFile);

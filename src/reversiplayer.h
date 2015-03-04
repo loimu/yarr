@@ -21,6 +21,7 @@ public:
     bool isHumanPlayer();
     void setPlayerId(Board::PlayerID playerId);
     Board::PlayerID getPlayerId();
+    QString getPlayerColor();
     void setModel(BoardModel *model);
 
 public slots:

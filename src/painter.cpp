@@ -16,9 +16,10 @@ void Painter::paint(QPainter *painter, const QStyleOptionViewItem &option, const
     if(statusId > -1) {
         if(statusId == Board::Black) {
             painter->setBrush(Qt::black);
-        } else if (statusId == Board::White) {
+        } else if(statusId == Board::White) {
             painter->setBrush(Qt::white);
         }
+        painter->setRenderHint(QPainter::Antialiasing);
         painter->drawEllipse(option.rect.adjusted(3, 3, -3, -3));
     }
 }

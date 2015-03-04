@@ -21,6 +21,14 @@ Board::PlayerID ReversiPlayer::getPlayerId() {
     return playerId;
 }
 
+QString ReversiPlayer::getPlayerColor() {
+    if(playerId == 1)
+        return "White";
+    else if(playerId == 0)
+        return "Black";
+    return "N/A";
+}
+
 void ReversiPlayer::setModel(BoardModel *model) {
     boardModel = model;
 }

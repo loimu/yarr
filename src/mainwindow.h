@@ -27,7 +27,7 @@ public:
 private:
     Ui::MainWindow *ui;
     BoardModel *model;
-    ReversiPlayer *player, *computerPlayer;
+    ReversiPlayer *firstPlayer, *secondPlayer;
     QStateMachine *machine;
     QState *outOfGameState, *inGameState, *checkBoardState,
            *playerFirstMoveState, *playerSecondMoveState;

@@ -15,6 +15,7 @@ set(yarr_SRCS src/main.cpp
               src/painter.cpp
               src/player.cpp
               src/reversiplayer.cpp
+              src/settings.cpp
               src/solver.cpp
               src/tests.cpp
               src/aboutdialog.cpp)
@@ -24,10 +25,11 @@ set(yarr_HDRS src/mainwindow.h
               src/painter.h
               src/player.h
               src/reversiplayer.h
+              src/settings.h
               src/solver.h
               src/tests.h
               src/aboutdialog.h)
-set(yarr_FRMS src/mainwindow.ui src/aboutdialog.ui)
+set(yarr_FRMS src/mainwindow.ui src/settings.ui src/aboutdialog.ui)
 set(yarr_RSRCS resources.qrc)
 
 if(Qt5Core_DIR)
