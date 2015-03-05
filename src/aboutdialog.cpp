@@ -1,6 +1,6 @@
 #include "aboutdialog.h"
 
-AboutDialog::AboutDialog()
+AboutDialog::AboutDialog(QWidget *parent) : QWidget(parent)
 {
     ui.setupUi(this);
     setWindowFlags(Qt::Dialog);
@@ -12,7 +12,7 @@ AboutDialog::AboutDialog()
 void AboutDialog::addText() {
     QString text;
     text.append(QString("<p><b>YARR</b> (Yet Another ReveRsi game) v%1"
-                        "<br />\251 2014-2015 Blaze &lt;blaze@"
+                        "<br />&copy; 2014-2015 Blaze &lt;blaze@"
                         "open.by&gt;</p><p>Qt %2 (built with Qt %3)<br />"
                         "Licensed under GPL v3 or later.</p><p><b>Links:</b>"
                         "<br />Project: "

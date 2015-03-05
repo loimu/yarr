@@ -1,5 +1,6 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
+
 #if QT_VERSION >= 0x050000
     #include <QtWidgets>
 #endif

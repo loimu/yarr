@@ -116,7 +116,6 @@ void MainWindow::beforeMove() {
 }
 
 void MainWindow::startGame() {
-    this->statusBar()->showMessage(tr("New game is started"), 2000);
     model->init();
     setPlayers();
     emit gameStarted();
@@ -189,6 +188,6 @@ void MainWindow::rules() {
 }
 
 void MainWindow::about() {
-    AboutDialog *dialog = new AboutDialog();
+    AboutDialog *dialog = new AboutDialog(this);
     dialog->show();
 }

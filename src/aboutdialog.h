@@ -1,8 +1,5 @@
 #ifndef ABOUTDIALOG_H
 #define ABOUTDIALOG_H
-#if QT_VERSION >= 0x050000
-    #include <QtWidgets>
-#endif
 
 #include <QWidget>
 
@@ -16,7 +13,7 @@ class AboutDialog : public QWidget
     void addText();
 
 public:
-    AboutDialog();
+    AboutDialog(QWidget *parent = 0);
 };
 
 #endif // ABOUTDIALOG_H
