@@ -3,10 +3,14 @@
 Board::Board() : rows(8), cols(8)
 {
     int oo1 = 16, oo2 = 32, oo3 = 48;
-    dirFlags.insert(Board::N, (quint64) 0x0000 << oo3 | (quint64) 0x0000 << oo2 | (quint64) 0x0000 << oo1 | (quint64) 0x00ff);
-    dirFlags.insert(Board::W, (quint64) 0x0101 << oo3 | (quint64) 0x0101 << oo2 | (quint64) 0x0101 << oo1 | (quint64) 0x0101);
-    dirFlags.insert(Board::S, (quint64) 0xff00 << oo3 | (quint64) 0x0000 << oo2 | (quint64) 0x0000 << oo1 | (quint64) 0x0000);
-    dirFlags.insert(Board::E, (quint64) 0x8080 << oo3 | (quint64) 0x8080 << oo2 | (quint64) 0x8080 << oo1 | (quint64) 0x8080);
+    dirFlags.insert(Board::N, (quint64) 0x0000 << oo3 | (quint64) 0x0000 << oo2
+                    | (quint64) 0x0000 << oo1 | (quint64) 0x00ff);
+    dirFlags.insert(Board::W, (quint64) 0x0101 << oo3 | (quint64) 0x0101 << oo2
+                    | (quint64) 0x0101 << oo1 | (quint64) 0x0101);
+    dirFlags.insert(Board::S, (quint64) 0xff00 << oo3 | (quint64) 0x0000 << oo2
+                    | (quint64) 0x0000 << oo1 | (quint64) 0x0000);
+    dirFlags.insert(Board::E, (quint64) 0x8080 << oo3 | (quint64) 0x8080 << oo2
+                    | (quint64) 0x8080 << oo1 | (quint64) 0x8080);
     dirFlags.insert(Board::NE, dirFlags.value(Board::N) | dirFlags.value(Board::E));
     dirFlags.insert(Board::SE, dirFlags.value(Board::E) | dirFlags.value(Board::S));
     dirFlags.insert(Board::SW, dirFlags.value(Board::S) | dirFlags.value(Board::W));
@@ -135,8 +139,10 @@ quint64 Board::getNextCell(quint64 currentCell, Board::Dir direction) {
 }
 
 void Board::reverseLine(quint64 startMask, quint64 endMask) {
-    QPair<int, int> startIndex = maskToIndex(startMask), endIndex = maskToIndex(endMask);
-    int diffColumn = endIndex.second - startIndex.second, diffRow = endIndex.first - startIndex.first;
+    QPair<int, int> startIndex = maskToIndex(startMask);
+    QPair<int, int> endIndex = maskToIndex(endMask);
+    int diffColumn = endIndex.second - startIndex.second;
+    int diffRow = endIndex.first - startIndex.first;
     if(!diffColumn || !diffRow || (qAbs(diffColumn) == qAbs(diffRow))) {
         int diffMax = qMax(qAbs(diffColumn), qAbs(diffRow));
         int dColumn = 0, dRow = 0;

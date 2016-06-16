@@ -20,6 +20,7 @@ void Painter::paint(QPainter *painter, const QStyleOptionViewItem &option, const
             painter->setBrush(Qt::white);
         }
         painter->setRenderHint(QPainter::Antialiasing);
+        // method adjusted() takes offset from borders as args
         painter->drawEllipse(option.rect.adjusted(3, 3, -3, -3));
     }
 }

@@ -1,3 +1,22 @@
+/* ========================================================================
+*    Copyright (C) 2014-2016 Blaze <blaze@vivaldi.net>
+*
+*    This file is part of YARR.
+*
+*    YARR is free software: you can redistribute it and/or modify
+*    it under the terms of the GNU General Public License as published by
+*    the Free Software Foundation, either version 3 of the License, or
+*    (at your option) any later version.
+*
+*    YARR is distributed in the hope that it will be useful,
+*    but WITHOUT ANY WARRANTY; without even the implied warranty of
+*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*    GNU General Public License for more details.
+*
+*    You should have received a copy of the GNU General Public License
+*    along with YARR.  If not, see <http://www.gnu.org/licenses/>.
+* ======================================================================== */
+
 #include <QtGui>
 #include <QStateMachine>
 #include <QPropertyAnimation>
@@ -18,19 +37,14 @@
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
-    BoardTests t1;
-    QTest::qExec(&t1);
     ui->setupUi(this);
     ui->mainToolBar->hide();
-    ui->tableView->verticalHeader()->hide();
-    ui->tableView->horizontalHeader()->hide();
     // menu actions
     connect(ui->actionNew_Game, SIGNAL(triggered()), SLOT(startGame()));
     connect(ui->actionRules, SIGNAL(triggered()), SLOT(rules()));
     connect(ui->actionResign, SIGNAL(triggered()), SLOT(resign()));
     connect(ui->actionSettings, SIGNAL(triggered()), SLOT(settings()));
     connect(ui->actionAbout_YARR, SIGNAL(triggered()), SLOT(about()));
-
     model = new BoardModel(this);
     ui->tableView->setModel(model);
     ui->tableView->setFixedHeight(ui->tableView->horizontalHeader()->height() +
@@ -74,8 +88,6 @@ void MainWindow::initStateMachine() {
     connect(outOfGameState, SIGNAL(propertiesAssigned()), SLOT(outOfGame()));
     connect(playerFirstMoveState, SIGNAL(propertiesAssigned()), firstPlayer, SLOT(takeTurn()));
     connect(playerSecondMoveState, SIGNAL(propertiesAssigned()), secondPlayer, SLOT(takeTurn()));
-    connect(playerFirstMoveState, SIGNAL(propertiesAssigned()), SLOT(beforeMove()));
-    connect(playerSecondMoveState, SIGNAL(propertiesAssigned()), SLOT(beforeMove()));
     connect(this, SIGNAL(playerMadeMove()), SLOT(afterMove()));
     inGameState->assignProperty(ui->actionResign, "enabled", true);
     outOfGameState->assignProperty(ui->actionResign, "enabled", false);
@@ -103,9 +115,10 @@ void MainWindow::afterMove() {
         emit nextMove();
     }
     emit nextMove();
+    updateCount();
 }
 
-void MainWindow::beforeMove() {
+void MainWindow::updateCount() {
     QString count;
     count.append(firstPlayer->getPlayerColor() + ":");
     count.append(QString::number(model->playerBidsCount(firstPlayer->getPlayerId())));
@@ -135,9 +148,9 @@ void MainWindow::checkGame() {
         message = tr("Congratulations!");
     } else if(humanPlayerBidsCount < computerPlayerBidsCount) {
         title = tr("You lost");
-        message = tr("We're sorry.");
+        message = tr("We're sorry. Next time you'll be lucky!");
     } else if(humanPlayerBidsCount == computerPlayerBidsCount) {
-        title = tr("There's a draw");
+        title = tr("It's a draw");
         message = tr("Not bad!");
     }
     QMessageBox::information(this, title, message);
@@ -167,12 +180,12 @@ void MainWindow::settings() {
 }
 
 void MainWindow::rules() {
-    QDialog *gameRules = new QDialog();
-    gameRules->setWindowTitle("Game rules");
+    QDialog *gameRules = new QDialog(this);
+    gameRules->setWindowTitle(tr("Game rules"));
     gameRules->setFixedSize(500,600);
     gameRules->setModal(false);
     QPushButton *closeButton = new QPushButton(gameRules);
-    closeButton->setText("Close");
+    closeButton->setText(tr("Close"));
     closeButton->setGeometry(435,570,60,25);
     closeButton->show();
     connect(closeButton, SIGNAL(clicked()), gameRules, SLOT(close()));
@@ -182,7 +195,7 @@ void MainWindow::rules() {
     QTextStream ReadFile(&rulesFile);
     textEdit->setText(ReadFile.readAll());
     textEdit->setReadOnly(true);
-    textEdit->setGeometry(5,5, 490,565);
+    textEdit->setGeometry(5,5,490,565);
     textEdit->show();
     gameRules->show();
 }
@@ -190,4 +203,7 @@ void MainWindow::rules() {
 void MainWindow::about() {
     AboutDialog *dialog = new AboutDialog(this);
     dialog->show();
+    ui->actionAbout_YARR->setEnabled(false);
+    connect(dialog, SIGNAL(destroyed(bool)),
+            ui->actionAbout_YARR, SLOT(setEnabled(bool)));
 }
