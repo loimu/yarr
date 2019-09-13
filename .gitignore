@@ -1,0 +1,6 @@
+*~
+*.kdev4
+*.pro.user*
+*.txt.user*
+.kdev4
+build
