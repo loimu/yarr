@@ -1,12 +1,12 @@
-project(yarr)
-cmake_minimum_required(VERSION 2.8.9)
-
-set(CMAKE_AUTOMOC ON)
+cmake_minimum_required(VERSION 3.1.0)
+project(yarr VERSION 0.1.0)
 
 set(yarr_SRCS src/main.cpp
               src/mainwindow.cpp
               src/board.cpp
               src/boardmodel.cpp
+              src/networkplayerlocal.cpp
+              src/networkplayerremote.cpp
               src/painter.cpp
               src/player.cpp
               src/reversiplayer.cpp
@@ -21,6 +21,9 @@ find_package(Qt5Core QUIET)
 find_package(Qt5Widgets)
 find_package(Qt5Network)
 find_package(Qt5Test)
+
+set(CMAKE_AUTOMOC ON)
+
 include_directories(${Qt5Core_INCLUDE_DIRS}
                     ${Qt5Widgets_INCLUDE_DIRS}
                     ${Qt5Network_INCLUDE_DIRS}
