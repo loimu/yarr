@@ -10,5 +10,6 @@ Player::~Player()
 }
 
 void Player::makeMove(BoardModel *model, Board::PlayerID playerId) {
-
+    Q_UNUSED(model);
+    Q_UNUSED(playerId);
 }
