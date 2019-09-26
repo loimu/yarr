@@ -5,6 +5,9 @@ set(yarr_SRCS src/main.cpp
               src/mainwindow.cpp
               src/board.cpp
               src/boardmodel.cpp
+              src/networkabstract.cpp
+              src/networkclient.cpp
+              src/networkserver.cpp
               src/networkplayerlocal.cpp
               src/networkplayerremote.cpp
               src/painter.cpp
