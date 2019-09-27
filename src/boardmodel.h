@@ -15,7 +15,7 @@ class BoardModel: public QAbstractTableModel {
     int currentPlayerId;
 
 public:
-    BoardModel(QObject *parent);
+    explicit BoardModel(QObject* parent = nullptr);
     virtual ~BoardModel();
     void setCurrentPlayerId(Board::PlayerID playerId);
     QModelIndexList getPossibleMoves(int playerId);

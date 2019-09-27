@@ -1,7 +1,6 @@
 #include "boardmodel.h"
 
-BoardModel::BoardModel(QObject *parent = 0) :
-    QAbstractTableModel(parent), board()
+BoardModel::BoardModel(QObject* parent) : QAbstractTableModel(parent), board()
 {
     clear();
 }
